@@ -317,6 +317,7 @@ func Provider() terraform.ResourceProvider {
 			"aws_api_gateway_usage_plan":                       resourceAwsApiGatewayUsagePlan(),
 			"aws_api_gateway_usage_plan_key":                   resourceAwsApiGatewayUsagePlanKey(),
 			"aws_api_gateway_vpc_link":                         resourceAwsApiGatewayVpcLink(),
+			"aws_api_gateway_v2":                               resourceAwsApiGatewayV2(),
 			"aws_app_cookie_stickiness_policy":                 resourceAwsAppCookieStickinessPolicy(),
 			"aws_appautoscaling_target":                        resourceAwsAppautoscalingTarget(),
 			"aws_appautoscaling_policy":                        resourceAwsAppautoscalingPolicy(),
@@ -915,6 +916,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		endpoints := endpointsSetI.(map[string]interface{})
 		config.AcmEndpoint = endpoints["acm"].(string)
 		config.ApigatewayEndpoint = endpoints["apigateway"].(string)
+		config.ApigatewayV2Endpoint = endpoints["apigatewayv2"].(string)
 		config.CloudFormationEndpoint = endpoints["cloudformation"].(string)
 		config.CloudWatchEndpoint = endpoints["cloudwatch"].(string)
 		config.CloudWatchEventsEndpoint = endpoints["cloudwatchevents"].(string)
@@ -1009,6 +1011,12 @@ func endpointsSchema() *schema.Schema {
 					Optional:    true,
 					Default:     "",
 					Description: descriptions["apigateway_endpoint"],
+				},
+				"apigatewayv2": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Default:     "",
+					Description: descriptions["apigatewayv2_endpoint"],
 				},
 				"cloudwatch": {
 					Type:        schema.TypeString,
@@ -1182,6 +1190,7 @@ func endpointsToHash(v interface{}) int {
 	var buf bytes.Buffer
 	m := v.(map[string]interface{})
 	buf.WriteString(fmt.Sprintf("%s-", m["apigateway"].(string)))
+	buf.WriteString(fmt.Sprintf("%s-", m["apigatewayv2"].(string)))
 	buf.WriteString(fmt.Sprintf("%s-", m["cloudwatch"].(string)))
 	buf.WriteString(fmt.Sprintf("%s-", m["cloudwatchevents"].(string)))
 	buf.WriteString(fmt.Sprintf("%s-", m["cloudwatchlogs"].(string)))

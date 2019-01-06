@@ -18,6 +18,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/acm"
 	"github.com/aws/aws-sdk-go/service/acmpca"
 	"github.com/aws/aws-sdk-go/service/apigateway"
+	"github.com/aws/aws-sdk-go/service/apigatewayv2"
 	"github.com/aws/aws-sdk-go/service/applicationautoscaling"
 	"github.com/aws/aws-sdk-go/service/appmesh"
 	"github.com/aws/aws-sdk-go/service/appsync"
@@ -131,6 +132,7 @@ type Config struct {
 
 	AcmEndpoint              string
 	ApigatewayEndpoint       string
+	ApigatewayV2Endpoint     string
 	CloudFormationEndpoint   string
 	CloudWatchEndpoint       string
 	CloudWatchEventsEndpoint string
@@ -198,6 +200,7 @@ type AWSClient struct {
 	acmconn               *acm.ACM
 	acmpcaconn            *acmpca.ACMPCA
 	apigateway            *apigateway.APIGateway
+	apigatewayv2          *apigatewayv2.ApiGatewayV2
 	appautoscalingconn    *applicationautoscaling.ApplicationAutoScaling
 	autoscalingconn       *autoscaling.AutoScaling
 	s3conn                *s3.S3
@@ -419,6 +422,7 @@ func (c *Config) Client() (interface{}, error) {
 	// Some services have user-configurable endpoints
 	awsAcmSess := sess.Copy(&aws.Config{Endpoint: aws.String(c.AcmEndpoint)})
 	awsApigatewaySess := sess.Copy(&aws.Config{Endpoint: aws.String(c.ApigatewayEndpoint)})
+	awsApigatewayV2Sess := sess.Copy(&aws.Config{Endpoint: aws.String(c.ApigatewayV2Endpoint)})
 	awsCfSess := sess.Copy(&aws.Config{Endpoint: aws.String(c.CloudFormationEndpoint)})
 	awsCwSess := sess.Copy(&aws.Config{Endpoint: aws.String(c.CloudWatchEndpoint)})
 	awsCweSess := sess.Copy(&aws.Config{Endpoint: aws.String(c.CloudWatchEventsEndpoint)})
@@ -516,6 +520,7 @@ func (c *Config) Client() (interface{}, error) {
 	client.acmconn = acm.New(awsAcmSess)
 	client.acmpcaconn = acmpca.New(sess)
 	client.apigateway = apigateway.New(awsApigatewaySess)
+	client.apigatewayv2 = apigatewayv2.New(awsApigatewayV2Sess)
 	client.appautoscalingconn = applicationautoscaling.New(sess)
 	client.autoscalingconn = autoscaling.New(awsAutoscalingSess)
 	client.cloud9conn = cloud9.New(sess)
